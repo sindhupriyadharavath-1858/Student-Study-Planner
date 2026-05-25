@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Study Planner</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- Sidebar Overlay (mobile) -->
+<div id="sidebar-overlay" class="sidebar-overlay" onclick="closeSidebar()"></div>
+
+<div class="app">
+  <!-- ===== SIDEBAR ===== -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">🎓</div>
+      <div class="logo-text">
+        <h1>StudyPlanner</h1>
+        <p>Stay productive</p>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <button id="nav-dashboard" class="nav-item active" onclick="navigate('dashboard')"><span class="icon">📊</span> Dashboard</button>
+      <button id="nav-tasks"     class="nav-item"        onclick="navigate('tasks')">    <span class="icon">✅</span> Tasks</button>
+      <button id="nav-pomodoro"  class="nav-item"        onclick="navigate('pomodoro')"> <span class="icon">⏱</span> Pomodoro</button>
+      <button id="nav-subjects"  class="nav-item"        onclick="navigate('subjects')"> <span class="icon">📚</span> Subjects</button>
+    </nav>
+    <div class="sidebar-footer">
+      <button id="dark-toggle" class="dark-toggle" onclick="toggleDark()"><span>🌙</span><span>Dark Mode</span></button>
+      <p class="designer-credit">Designed by<br><span>Sindhupriya Dharavath</span></p>
+    </div>
+  </aside>
+
+  <!-- ===== MAIN ===== -->
+  <div class="main">
+    <!-- Topbar -->
+    <header class="topbar">
+      <button class="menu-btn" onclick="openSidebar()">☰</button>
+      <div>
+        <h2 id="page-title">Dashboard</h2>
+        <p id="topbar-date"></p>
+      </div>
+    </header>
+
+    <!-- Content -->
+    <main class="content">
+
+      <!-- ===== DASHBOARD ===== -->
+      <div id="page-dashboard" class="page active">
+        <div style="margin-bottom:20px">
+          <h2 style="font-size:20px;font-weight:700;margin-bottom:4px">Good morning, Student! 👋</h2>
+          <p style="font-size:13px;color:var(--text-muted)">Ready to make today count? Let's get productive.</p>
+        </div>
+
+        <!-- Stats grid -->
+        <div class="grid-4" style="margin-bottom:20px">
+          <div class="card" onclick="navigate('tasks')" style="cursor:pointer">
+            <div class="stat-icon" style="background:rgba(155,102,212,0.12)">✅</div>
+            <div class="stat-value" id="stat-tasks">0/0</div>
+            <div class="stat-label">Tasks Done</div>
+          </div>
+          <div class="card" onclick="navigate('pomodoro')" style="cursor:pointer">
+            <div class="stat-icon" style="background:rgba(240,168,200,0.2)">⏱</div>
+            <div class="stat-value" id="stat-sessions">0</div>
+            <div class="stat-label">Study Sessions</div>
+          </div>
+          <div class="card" onclick="navigate('subjects')" style="cursor:pointer">
+            <div class="stat-icon" style="background:rgba(168,216,240,0.2)">📚</div>
+            <div class="stat-value">5</div>
+            <div class="stat-label">Subjects</div>
+          </div>
+          <div class="card">
+            <div class="stat-icon" style="background:rgba(92,199,133,0.15)">📈</div>
+            <div class="stat-value" id="stat-productivity">0%</div>
+            <div class="stat-label">Productivity</div>
+          </div>
+        </div>
+
+        <!-- 2-col grid -->
+        <div class="grid-2" style="margin-bottom:20px">
+          <!-- Progress -->
+          <div class="card">
+            <div class="card-title">📈 Daily Progress</div>
+            <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:12px">
+              <span style="font-size:13px;color:var(--text-muted)">Overall productivity</span>
+              <span id="overall-pct" style="font-size:26px;font-weight:700;color:var(--primary)">0%</span>
+            </div>
+            <div class="progress-track" style="height:12px;margin-bottom:16px">
+              <div id="pb-overall" class="progress-fill" style="width:0%;background:linear-gradient(90deg,var(--primary),var(--secondary))"></div>
+            </div>
+
+            <div class="progress-wrap">
+              <div class="progress-label">
+                <span>Tasks Completed</span><span class="pct" id="pb-tasks-pct">0%</span>
+              </div>
+              <div class="progress-track"><div id="pb-tasks" class="progress-fill" style="background:var(--primary)"></div></div>
+            </div>
+            <div class="progress-wrap">
+              <div class="progress-label">
+                <span>Subject Progress</span><span class="pct" id="pb-subjects-pct">0%</span>
+              </div>
+              <div class="progress-track"><div id="pb-subjects" class="progress-fill" style="background:var(--secondary)"></div></div>
+            </div>
+            <div class="progress-wrap" style="margin-bottom:0">
+              <div class="progress-label">
+                <span>Study Sessions</span><span class="pct" id="pb-sessions-pct">0%</span>
+              </div>
+              <div class="progress-track"><div id="pb-sessions" class="progress-fill" style="background:var(--accent)"></div></div>
+            </div>
+          </div>
+
+          <!-- Quote -->
+          <div class="quote-card">
+            <div class="card-title">✨ Daily Inspiration</div>
+            <p id="quote-text" class="quote-text">"The secret of getting ahead is getting started."</p>
+            <p id="quote-author" class="quote-author">— Mark Twain</p>
+            <button class="btn btn-ghost btn-sm" onclick="nextQuote()" style="margin-top:12px">Next quote →</button>
+          </div>
+        </div>
+
+        <!-- Calendar -->
+        <div class="card" style="max-width:340px">
+          <div class="card-title">📅 Calendar</div>
+          <div class="cal-header">
+            <button class="cal-nav" onclick="calPrev()">‹</button>
+            <span class="cal-month" id="cal-month"></span>
+            <button class="cal-nav" onclick="calNext()">›</button>
+          </div>
+          <div class="cal-grid">
+            <div class="cal-day-header">Su</div><div class="cal-day-header">Mo</div>
+            <div class="cal-day-header">Tu</div><div class="cal-day-header">We</div>
+            <div class="cal-day-header">Th</div><div class="cal-day-header">Fr</div>
+            <div class="cal-day-header">Sa</div>
+          </div>
+          <div class="cal-grid" id="cal-days"></div>
+        </div>
+      </div>
+
+      <!-- ===== TASKS ===== -->
+      <div id="page-tasks" class="page">
+        <div style="max-width:600px">
+          <!-- Stats -->
+          <div class="grid-3" style="margin-bottom:16px">
+            <div class="card" style="text-align:center;padding:14px">
+              <div class="stat-value" id="task-total">0</div><div class="stat-label">Total</div>
+            </div>
+            <div class="card" style="text-align:center;padding:14px">
+              <div class="stat-value" style="color:var(--primary)" id="task-active">0</div><div class="stat-label">Active</div>
+            </div>
+            <div class="card" style="text-align:center;padding:14px">
+              <div class="stat-value" style="color:var(--success)" id="task-done">0</div><div class="stat-label">Done</div>
+            </div>
+          </div>
+
+          <!-- Progress -->
+          <div class="card" style="margin-bottom:16px">
+            <div class="progress-label">
+              <span style="font-size:13px;font-weight:600">Daily Progress</span>
+              <span class="pct" id="task-pb-pct">0%</span>
+            </div>
+            <div class="progress-track" style="height:10px">
+              <div id="task-pb" class="progress-fill" style="width:0%;background:linear-gradient(90deg,var(--primary),var(--secondary))"></div>
+            </div>
+          </div>
+
+          <!-- Add task -->
+          <div class="card" style="margin-bottom:16px">
+            <div class="card-title">📝 Add New Task</div>
+            <div style="margin-bottom:10px">
+              <input id="task-input" class="form-control" type="text" placeholder="What do you need to study?" />
+            </div>
+            <div class="form-row">
+              <select id="task-subject" class="form-control">
+                <option>General</option>
+                <option>Mathematics</option>
+                <option>Chemistry</option>
+                <option>Physics</option>
+                <option>Programming</option>
+                <option>English</option>
+              </select>
+              <button class="btn btn-primary" onclick="addTask()">+ Add</button>
+            </div>
+          </div>
+
+          <!-- Filters -->
+          <div class="filter-row">
+            <button id="filter-all"    class="filter-pill active" onclick="setFilter('all')">All</button>
+            <button id="filter-active" class="filter-pill"        onclick="setFilter('active')">Active</button>
+            <button id="filter-done"   class="filter-pill"        onclick="setFilter('done')">Done</button>
+            <button class="btn btn-danger btn-sm" style="margin-left:auto" onclick="clearDone()">Clear done</button>
+          </div>
+
+          <!-- List -->
+          <div id="task-list"></div>
+        </div>
+      </div>
+
+      <!-- ===== POMODORO ===== -->
+      <div id="page-pomodoro" class="page">
+        <div style="max-width:440px;margin:0 auto">
+          <!-- Mode tabs -->
+          <div class="mode-tabs">
+            <button id="tab-focus" class="mode-tab active" onclick="setTimerMode('focus')">🧠 Focus (25m)</button>
+            <button id="tab-break" class="mode-tab"        onclick="setTimerMode('break')">☕ Break (5m)</button>
+          </div>
+
+          <!-- Timer card -->
+          <div class="card" style="text-align:center;margin-bottom:16px">
+            <div class="timer-ring">
+              <svg width="200" height="200" viewBox="0 0 200 200">
+                <circle cx="100" cy="100" r="88" fill="none" stroke="var(--bg2)" stroke-width="8"/>
+                <circle id="timer-ring-fg" cx="100" cy="100" r="88"
+                  fill="none" stroke="#9b66d4" stroke-width="8" stroke-linecap="round"
+                  style="transition:stroke-dashoffset 1s linear;transform-origin:center;"/>
+              </svg>
+              <div class="timer-center">
+                <div class="timer-time" id="timer-time">25:00</div>
+                <div class="timer-mode" id="timer-mode-label">Focus Session</div>
+              </div>
+            </div>
+            <div class="timer-controls">
+              <button class="timer-btn-sec" onclick="resetTimer()" title="Reset">↺</button>
+              <button class="timer-btn-main" id="btn-play" onclick="toggleTimer()">▶</button>
+              <div style="width:44px"></div>
+            </div>
+          </div>
+
+          <!-- Session stats -->
+          <div class="grid-3" style="margin-bottom:16px">
+            <div class="card" style="text-align:center;padding:14px">
+              <div class="stat-value" style="color:var(--primary)" id="stat-sess-count">0</div>
+              <div class="stat-label">Sessions</div>
+            </div>
+            <div class="card" style="text-align:center;padding:14px">
+              <div class="stat-value" style="color:#f07098" id="stat-sess-hours">0h0m</div>
+              <div class="stat-label">Hours</div>
+            </div>
+            <div class="card" style="text-align:center;padding:14px">
+              <div class="stat-value" style="color:var(--success)" id="stat-sess-streak">0/4</div>
+              <div class="stat-label">Streak</div>
+            </div>
+          </div>
+
+          <!-- Tip -->
+          <div class="card" style="margin-bottom:16px">
+            <div class="card-title" style="font-size:11px;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px">💡 Study Tip</div>
+            <p style="font-size:13px;color:var(--text-muted);line-height:1.6">
+              Put your phone in another room during focus sessions and keep water nearby to stay hydrated.
+            </p>
+          </div>
+
+          <!-- Dots -->
+          <div class="card">
+            <div class="card-title" style="font-size:11px;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:10px">Today's Pomodoros</div>
+            <div class="pomo-dots" id="pomo-dots"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== SUBJECTS ===== -->
+      <div id="page-subjects" class="page">
+        <div style="max-width:600px">
+          <div class="grid-2" style="margin-bottom:16px">
+            <div class="card" style="text-align:center;padding:14px">
+              <div class="stat-value" style="color:var(--primary)" id="subj-avg">0%</div>
+              <div class="stat-label">Avg Progress</div>
+            </div>
+            <div class="card" style="text-align:center;padding:14px">
+              <div class="stat-value" style="color:#f07098" id="subj-hrs">0h</div>
+              <div class="stat-label">Total Hours</div>
+            </div>
+          </div>
+          <div class="card" style="margin-bottom:20px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+              <span style="font-size:13px;font-weight:600">Overall Study Progress</span>
+              <span id="subj-overall-pct" style="font-size:13px;font-weight:700;color:var(--primary)">0%</span>
+            </div>
+            <div class="progress-track" style="height:10px">
+              <div id="subj-overall-pb" class="progress-fill" style="width:0%;background:linear-gradient(90deg,var(--primary),var(--secondary),var(--accent))"></div>
+            </div>
+          </div>
+          <div id="subjects-list"></div>
+        </div>
+      </div>
+
+    </main>
+
+    <footer>
+      Designed by <span>Sindhupriya Dharavath</span>
+    </footer>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
